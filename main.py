@@ -8,46 +8,49 @@ def clear_screen():
     # Clear screen command based on OS
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def sieve_of_eratosthenes(start, end):
-    limit = end  # Start with a reasonable limit
-    primes = []
+def sieve_of_eratosthenes(limit):
     is_prime = [True] * (limit + 1)
     p = 2
+    primes = []
     
-    for p in range(2, int(math.sqrt(limit)) + 1):
-        if is_prime[p]:
-            for i in range(p * p, limit + 1, p):
-                is_prime[i] = False
-    
-    for p in range(start, end + 1):
+    while len(primes) < limit:
+        if p > limit:
+            break
         if is_prime[p]:
             primes.append(p)
+            for i in range(p * p, limit + 1, p):
+                is_prime[i] = False
+        p += 1
     
     return primes
 
 def find_largest_prime(num_primes, num_threads=10):
+    total_primes = num_primes
     limit = 1000000  # Initial sieve limit
     largest_prime = 2
     primes_found = 0
     
     with ThreadPoolExecutor(max_workers=num_threads) as executor:
         futures = []
-        chunk_size = num_primes // num_threads
+        chunk_size = limit // num_threads
         
         for i in range(num_threads):
             start = i * chunk_size + 2
-            end = start + chunk_size - 1 if i < num_threads - 1 else num_primes
-            futures.append(executor.submit(sieve_of_eratosthenes, start, end))
+            end = start + chunk_size - 1 if i < num_threads - 1 else limit
+            futures.append(executor.submit(sieve_of_eratosthenes, end))
         
         clear_screen()  # Clear the screen before starting
         
-        with tqdm(total=num_primes) as pbar:
+        with tqdm(total=total_primes, unit='prime') as pbar:
             for future in as_completed(futures):
                 primes = future.result()
                 primes_found += len(primes)
-                pbar.update(len(primes))
-                if primes:
-                    largest_prime = max(largest_prime, max(primes))
+                if primes_found >= total_primes:
+                    break
+                for prime in primes:
+                    if prime > largest_prime:
+                        largest_prime = prime
+                        pbar.update(1)
     
     return largest_prime
 
