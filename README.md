@@ -14,4 +14,5 @@ Punctuation: 20.215330
 ### 4core:
 Punctuation: 11.738081
 ## Community results:
-Here will go some impresive results of community
+### Here will go some impresive results of community
+Punctuation: 13.573053
