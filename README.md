@@ -15,5 +15,5 @@
 ### 4core:
   4%|███▎                                                                          | 4191/100000 [00:06<06:19, 252.33it/s]
   Terminated
-## Results in Lenovo community:
+## Community results:
 Here will go some impresive results of community
